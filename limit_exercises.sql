@@ -44,7 +44,7 @@ WHERE (hire_date LIKE '199%')
 	AND birth_date LIKE '%-12-25'
 ORDER BY hire_date DESC
 LIMIT 5 OFFSET 45;
--- They are all M and allborn  1996 
+-- Khun Berninin, ELvis GOodrum, Sachar Ghalwash, Moto Siegrist, Faiza Peek
 
 
 
