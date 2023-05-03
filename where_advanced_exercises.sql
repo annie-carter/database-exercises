@@ -60,16 +60,16 @@ WHERE (hire_date LIKE '199%')
 	AND birth_date LIKE '%-12-25';
 -- 362 and emp_no 10261, 10438, 10681
 -- 11
-SELECT *
+SELECT DISTINCT last_name
 FROM employees
 WHERE last_name LIKE '%q%';
--- over 1000
+-- 10 names 
 -- 12 
-SELECT *
+SELECT DISTINCT last_name
 FROM employees
 WHERE last_name LIKE '%q%'
- AND last_name NOT LIKE '%qu%';
- -- there are 547 rows 
+ AND last_name NOT LIKE '%qu%'
+ -- there are 3 rows 
 
 
 
