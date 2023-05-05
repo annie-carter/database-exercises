@@ -2,7 +2,7 @@
 -- 1 
 USE employees;
 DESCRIBE employees;
--- emp_no has pri keys
+-- emp_no is pri keys
 
 
 -- ---- Join Exercises
@@ -24,8 +24,6 @@ SHOW CREATE TABLE users;
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1 
 */
 
-
-
 SELECT*
 FROM roles;
 DESCRIBE roles;
@@ -41,7 +39,7 @@ SELECT *
 FROM users u
 JOIN roles r ON r.id = u.role_id;
 
-SELECT * COUNT(
+SELECT * 
 FROM users u
 LEFT JOIN roles r ON r.id = u.role_id;
 
@@ -73,26 +71,101 @@ with the name of the current manager for that
  department.
 */
 
-SELECT d.dept_name, CONCAT(em.first_name," ", em.last_name) AS Dept_Mgr
+SELECT d.dept_name AS Department_Name, CONCAT(em.first_name," ", em.last_name) AS Department_Manager
 FROM departments d
-JOIN dept_manager dm ON d.dept_no = dm.dept_no
-JOIN employees em ON dm.emp_no = em.emp_no
-JOIN titles t ON t.emp_no = dm.emp_no
-WHERE t.to_date > NOW();
+	JOIN dept_manager dm ON d.dept_no = dm.dept_no
+	JOIN employees em ON dm.emp_no = em.emp_no
+	JOIN titles t ON t.emp_no = dm.emp_no
+WHERE t.to_date > NOW()
+	AND dm.to_date > NOW()
+ORDER BY d.dept_name;
 
 -- 3
-SELECT d.dept_name, CONCAT(em.first_name," ", em.last_name) AS Dept_Mgr
+SELECT d.dept_name AS Department_Name, CONCAT(em.first_name," ", em.last_name) AS Manager_Name
 FROM departments d
-JOIN dept_manager dm ON d.dept_no = dm.dept_no
-JOIN employees em ON dm.emp_no = em.emp_no
-JOIN titles t ON t.emp_no = dm.emp_no
-WHERE t.to_date > NOW() AND em.gender LIKE 'F';
+	JOIN dept_manager dm ON d.dept_no = dm.dept_no
+	JOIN employees em ON dm.emp_no = em.emp_no
+	JOIN titles t ON t.emp_no = dm.emp_no
+WHERE t.to_date > NOW() 
+	AND em.gender LIKE 'F';
 
 -- 4
-SELECT t.title, COUNT(t.emp_no)
+SELECT t.Title, COUNT(t.emp_no) AS Count
 FROM titles t
-JOIN dept_emp de ON t.emp_no = de.emp_no
-JOIN departments d ON de.dept_no = d.dept_no
-WHERE d.dept_name = 'Customer Service' AND t.to_date > NOW()
+	JOIN dept_emp de ON t.emp_no = de.emp_no
+	JOIN departments d ON de.dept_no = d.dept_no
+WHERE d.dept_name = 'Customer Service' 
+	AND t.to_date > NOW()
+    AND de.to_date > NOW()
 GROUP BY t.title;
 
+-- 5
+SELECT d.dept_name AS Department_Name, CONCAT(em.first_name," ", em.last_name) AS Name, s.salary AS Salary
+FROM departments d
+	JOIN dept_manager dm ON d.dept_no = dm.dept_no
+    JOIN employees em ON dm.emp_no = em.emp_no
+    JOIN titles t ON t.emp_no = dm.emp_no
+    JOIN salaries s ON dm.emp_no = s.emp_no
+WHERE s.to_date > NOW()
+	AND t.to_date > NOW()
+    AND dm.to_date > NOW()
+ORDER BY d.dept_name;
+
+-- 6
+SELECT d.dept_no, d.dept_name, COUNT(de.emp_no) AS num_employees
+FROM departments d
+	JOIN dept_emp de ON d.dept_no = de.dept_no
+WHERE de.to_date > NOW()
+GROUP BY d.dept_no;
+
+-- 7
+SELECT d.dept_name, AVG(s.salary) AS average_salary
+FROM departments d
+	JOIN dept_emp de ON d.dept_no = de.dept_no
+    JOIN salaries s ON de.emp_no = s.emp_no
+WHERE de.to_date > NOW()
+	AND s.to_date > NOW()
+GROUP BY d.dept_name
+ORDER BY MAX(s.salary) DESC 
+LIMIT 1;
+
+-- 8
+SELECT e.first_name, e.last_name
+FROM departments d
+	JOIN dept_emp de ON d.dept_no = de.dept_no
+    JOIN salaries s ON de.emp_no = s.emp_no
+    JOIN employees e ON s.emp_no = e.emp_no
+WHERE d.dept_name = 'Marketing'
+	AND s.to_date > NOW()
+    AND de.to_date > NOW()
+GROUP BY e.first_name, e.last_name
+ORDER BY MAX(s.salary) DESC
+LIMIT 1;
+
+-- 9
+SELECT e.first_name, e.last_name, s.salary, d.dept_name
+FROM departments d
+	JOIN dept_manager dm ON d.dept_no = dm.dept_no
+    JOIN salaries s ON dm.emp_no = s.emp_no
+    JOIN employees e ON s.emp_no = e.emp_no
+WHERE s.to_date > NOW()
+	AND dm.to_date > NOW()
+GROUP BY e.first_name, e.last_name, s.salary, d.dept_name
+ORDER BY MAX(s.salary) DESC
+LIMIT 1;
+
+-- 10
+SELECT d.dept_name, ROUND(AVG(s.salary)) AS average_salary
+FROM departments d
+	JOIN dept_emp de ON d.dept_no = de.dept_no
+    JOIN salaries s ON de.emp_no = s.emp_no
+    JOIN employees e ON s.emp_no = e.emp_no
+    -- JOIN dept_manager dm ON s.emp_no = dm.emp_no
+WHERE de.to_date < NOW()
+-- s.to_date < NOW()
+	-- AND de.to_date < NOW()
+    -- AND dm.to_date < NOW()
+GROUP BY d.dept_name
+ORDER BY AVG(s.salary) DESC;
+
+-- BONUS
