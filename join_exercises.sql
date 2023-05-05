@@ -81,13 +81,16 @@ WHERE t.to_date > NOW()
 ORDER BY d.dept_name;
 
 -- 3
-SELECT d.dept_name AS Department_Name, CONCAT(em.first_name," ", em.last_name) AS Manager_Name
+SELECT d.dept_name AS 'Department Name', CONCAT(em.first_name," ", em.last_name) AS 'Manager Name'
 FROM departments d
 	JOIN dept_manager dm ON d.dept_no = dm.dept_no
 	JOIN employees em ON dm.emp_no = em.emp_no
 	JOIN titles t ON t.emp_no = dm.emp_no
-WHERE t.to_date > NOW() 
-	AND em.gender LIKE 'F';
+WHERE dm.to_date > NOW()
+	AND t.to_date > NOW()
+	AND em.gender LIKE 'F'
+ORDER BY d.dept_name;
+
 
 -- 4
 SELECT t.Title, COUNT(t.emp_no) AS Count
@@ -97,7 +100,9 @@ FROM titles t
 WHERE d.dept_name = 'Customer Service' 
 	AND t.to_date > NOW()
     AND de.to_date > NOW()
-GROUP BY t.title;
+GROUP BY t.title
+ORDER BY t.title ASC;
+
 
 -- 5
 SELECT d.dept_name AS Department_Name, CONCAT(em.first_name," ", em.last_name) AS Name, s.salary AS Salary
@@ -159,9 +164,9 @@ SELECT d.dept_name, ROUND(AVG(s.salary)) AS average_salary
 FROM departments d
 	JOIN dept_emp de ON d.dept_no = de.dept_no
     JOIN salaries s ON de.emp_no = s.emp_no
-    JOIN employees e ON s.emp_no = e.emp_no
+    -- JOIN employees e ON s.emp_no = e.emp_no
     -- JOIN dept_manager dm ON s.emp_no = dm.emp_no
-WHERE de.to_date < NOW()
+-- WHERE de.to_date < NOW()
 -- s.to_date < NOW()
 	-- AND de.to_date < NOW()
     -- AND dm.to_date < NOW()
@@ -169,14 +174,14 @@ GROUP BY d.dept_name
 ORDER BY AVG(s.salary) DESC;
 
 -- BONUS
-SELECT CONCAT(em.first_name,' ',em.last_name) AS Employee_Name
+SELECT CONCAT(em.first_name,' ',em.last_name) AS 'Employee Name', 
+d.dept_name AS 'Department Name', 
+employees, CONCAT(first_name,' ',last_name) AS 'Manager Name'
 FROM employees
-WHERE emp_no IN (
+-- WHERE emp_no IN (
     SELECT emp_no
-    FROM dept_emp)) 
-    d.dept_name AS Department Name,
-(CONCAT(first_name,' ',last_name) AS Manager_Name
-FROM employees
+    FROM dept_emp)
+    -- d.dept_name AS 'Department Name'
 WHERE emp_no IN (
     SELECT emp_no
     FROM dept_manager)))
