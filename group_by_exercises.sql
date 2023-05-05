@@ -9,7 +9,7 @@ SELECT last_name
 FROM employees
 WHERE last_name LIKE '%E%'
 GROUP BY last_name;
-
+-- Erbi*
 -- 4
 SELECT first_name,last_name 
 FROM employees
