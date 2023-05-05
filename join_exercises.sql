@@ -169,3 +169,21 @@ GROUP BY d.dept_name
 ORDER BY AVG(s.salary) DESC;
 
 -- BONUS
+SELECT CONCAT(em.first_name,' ',em.last_name) AS Employee_Name
+FROM employees
+WHERE emp_no IN (
+    SELECT emp_no
+    FROM dept_emp)) 
+    d.dept_name AS Department Name,
+(CONCAT(first_name,' ',last_name) AS Manager_Name
+FROM employees
+WHERE emp_no IN (
+    SELECT emp_no
+    FROM dept_manager)))
+WHERE departments d
+    JOIN dept_emp de ON d.dept_no = de.dept_no
+	JOIN dept_manager dm ON d.dept_no = dm.dept
+	JOIN employee em ON dm.emp_no = em.emp_no
+GROUP BY Employee_Name, Department_Name, Manager_Name
+ORDER BY employee LIKE "Huan Lortz";
+
