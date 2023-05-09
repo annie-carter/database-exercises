@@ -26,39 +26,23 @@ FROM dept_emp de;
 	FROM employees;
     
     -- 3 How many employees (current or previous) were born in each decade?
-
-   SELECT COUNT(birth_decades)-- CONCAT(first_name,' ', last_name) as 'Employees Name', 
-		CASE
-			WHEN LEFT(birth_date, 3) = '195' THEN '50s'
-			WHEN LEFT(birth_date, 3) = '196' THEN '60s'
-        END AS birth_decades
-	FROM employees;
+    
+    SELECT birth_decades, COUNT(birth_decades) 
+FROM (
+  SELECT CONCAT(first_name,' ', last_name) as 'Employees Name', 
+    CASE
+      WHEN LEFT(birth_date, 3) = '195' THEN '50s'
+      WHEN LEFT(birth_date, 3) = '196' THEN '60s'
+    END AS birth_decades
+  FROM employees
+) AS emp_by_decades
+GROUP BY birth_decades;
     
     /* 4 What is the current average salary for each of the following
     department groups: R&D, Sales & Marketing, Prod & QM, Finance & HR,
     Customer Service? */
     
-    SELECT AVG(salary)
-		CASE
-			WHEN dept_name = 'R&D' AND de.to_date > NOW() THEN 
-		END AS 
-	FROM salaries s
-    JOIN dept_emp de ON s.emp_no = de.emp_no
-    JOIN departments d ON de.dept_no =d.dept_no;
-    
-    
-    SELECT CONCAT(first_name,' ', last_name) as 'Employees Name', 
-		CASE
-			WHEN LEFT(birth_date, 3) = '5' THEN '50s'
-			WHEN LEFT(birth_date, 3) = '6' THEN '60s'
-			WHEN LEFT(birth_date, 3) = '7' THEN '70s'
-        END AS birth_decades
-	FROM employees;
 
-
-/*4 What is the current average salary for each of the following
-    department groups: R&D, Sales & Marketing, Prod & QM, Finance & HR,
-    Customer Service? */
 
 SELECT *
 FROM departments;
@@ -76,15 +60,17 @@ FROM employees e
 JOIN dept_emp de ON e.emp_no = de.emp_no
 JOIN salaries s ON e.emp_no = s.emp_no
 JOIN departments d ON de.dept_no = d.dept_no
-WHERE de.to_date > NOW()
-GROUP BY department_group;  
+WHERE s.to_date > NOW()
+GROUP BY department_group
+ORDER BY department_group;  
 
 -- BONUS
 SELECT DISTINCT de.emp_no, dept_no, from_date as 'start date', to_date,
 	IF (de.to_date > NOW(), 1, 0 )AS 'is_current_employee'
 FROM dept_emp de
-JOIN employees e ON de.emp_no = e.emp_no;
-
+JOIN employees e ON de.emp_no = e.emp_no
+Order BY de.emp_no;
+(
 
 
     
